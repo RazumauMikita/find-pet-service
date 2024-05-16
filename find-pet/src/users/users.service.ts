@@ -21,6 +21,7 @@ export class UsersService {
       password: createUserDto.password,
       country: createUserDto.country,
       city: createUserDto.city,
+      version: 1,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     })

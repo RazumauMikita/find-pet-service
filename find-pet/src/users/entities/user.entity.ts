@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
 import { ColumnNumericTransformer } from 'src/transformer/transformer'
+import { LostEntity } from 'src/lost/entities/lost.entity'
 
 @Entity()
 export class UserEntity {
@@ -34,4 +35,9 @@ export class UserEntity {
     transformer: new ColumnNumericTransformer(),
   })
   updatedAt: number
+
+  @OneToMany(() => LostEntity, (lost) => lost.ownerId, {
+    onDelete: 'SET NULL',
+  })
+  lost: LostEntity[]
 }

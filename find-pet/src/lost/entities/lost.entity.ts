@@ -29,6 +29,9 @@ export class LostEntity {
   @Column()
   description: string
 
+  @Column()
+  coordinates: string
+
   @ManyToOne(() => UserEntity, (user) => user.lost)
   @JoinColumn({ referencedColumnName: 'id' })
   ownerId: string

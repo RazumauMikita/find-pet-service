@@ -13,6 +13,12 @@ export class LostEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
+  @Column({ default: true })
+  isLost: boolean
+
+  @Column()
+  version: number
+
   @Column('bigint', {
     transformer: new ColumnNumericTransformer(),
   })

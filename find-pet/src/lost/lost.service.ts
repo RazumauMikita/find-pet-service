@@ -26,6 +26,7 @@ export class LostService {
     const { id } = await this.lostRepository.save({
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      isLost: createLostDto.isLost,
       coordinates: createLostDto.coordinates,
       ownerId: createLostDto.ownerId,
       description: createLostDto.description,
@@ -43,9 +44,12 @@ export class LostService {
   }
 
   async update(id: string, updateLostDto: UpdateLostDto) {
-    await this.isLostExist(id)
+    const existLost = await this.isLostExist(id)
     await this.lostRepository.update(id, {
       description: updateLostDto.description,
+      version: existLost.version + 1,
+      coordinates: updateLostDto.coordinates,
+      updatedAt: Date.now(),
     })
     return await this.findOne(id)
   }

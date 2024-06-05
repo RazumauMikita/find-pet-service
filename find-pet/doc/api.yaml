@@ -1,0 +1,187 @@
+openapi: 3.0.0
+info:
+  title: Lost pet service
+  description: Service to find lost pets
+  version: 1.0.0
+
+servers:
+  - url: /
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Assigned automatically in the server.
+          example: 'b0713603-12d5-4268-ab54-a4e83eb3b7da'
+        email:
+          type: string
+          format: email
+          example: 'example@email.com'
+        password:
+          type: string
+          example: passE123!
+        name:
+          type: string
+          example: 'John Travolta'
+        country:
+          type: string
+          example: 'USA'
+        city:
+          type: string
+          example: 'Miami'
+        lost:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lost'
+        version:
+          type: number
+          example: 1
+        createAt:
+          type: number
+          example: 1655000000
+        updateAt:
+          type: number
+          example: 1655000000
+      required:
+        - email
+        - password
+        - name
+    Lost:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Assigned automatically in the server.
+          example: 'b0713603-12d5-4268-ab54-a4e83eb3b7da'
+          format: uuid
+        ownerId:
+          type: string
+          format: uuid
+          example: 'b0713603-12d5-4268-ab54-a4e83eb3b7da'
+        isLost:
+          type: boolean
+          description: 'A lost pet is marked as true, and a found pet is marked as false.'
+          example: false
+        coordinates:
+          type: string
+          example: '23.234234, 33.23423424'
+        description:
+          type: string
+          example: 'Description of my pet.'
+        images:
+          type: array
+          items:
+            type: string
+          description: 'Locations of images.'
+          example: 'pet-site.by/public/uploads/b0713603-12d5-4268-ab54-a4e83eb3b7da.jpg'
+        version:
+          type: number
+          example: 1
+        createAt:
+          type: number
+          example: 1655000000
+        updateAt:
+          type: number
+          example: 1655000000
+      required:
+        - description
+        - ownerId
+security:
+  - bearerAuth: []
+
+paths:
+  /login:
+    post:
+      tags:
+        - Login
+      summary: Login
+      description: Logins a user and returns a JWT-token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: example
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email
+                password:
+                  type: string
+                  description: User's password
+                name:
+                  type: string
+                  description: User's name
+                country:
+                  type: string
+                  description: User's country
+                city:
+                  type: string
+                  description: User's city
+              required:
+                - email
+                - password
+                - name
+      responses:
+        200:
+          description: Successful login.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: JWT Token
+                  refreshToken:
+                    type: string
+                    description: JWT Token
+        404:
+          description: Incorrect login. User doesn't exist.
+        403:
+          description: Password is incorrect.
+  /signup:
+    post:
+      tags:
+        - Signup
+      security: []
+      summary: Signup
+      description: Signup a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: example
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email
+                name:
+                  type: string
+                  description: User's name
+                country:
+                  type: string
+                  description: User's country
+                city:
+                  type: string
+                  description: User's city
+              required:
+                - email
+                - password
+                - name
+      responses:
+        200:
+          description: Successful sign up.
+        400:
+          description: Bad request.
+        409:
+          description: Conflict. User's email already exist.

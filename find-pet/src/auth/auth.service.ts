@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import * as argon2 from 'argon2'
 
@@ -37,7 +42,7 @@ export class AuthService {
     })
 
     if (isUserExist) {
-      throw new BadRequestException('User already exists')
+      throw new HttpException('User already exists.', HttpStatus.CONFLICT)
     }
 
     const hash = await this.hashData(createUserDto.password)
@@ -53,7 +58,6 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: { email: authDto.email },
     })
-
     const tokens = await this.getTokens(user.id, user.email)
     return {
       accessToken: tokens.accessToken,
@@ -78,10 +82,11 @@ export class AuthService {
 
   async validateUser(email: string, password: string) {
     const user = await this.userRepository.findOne({ where: { email } })
-    if (!user) throw new BadRequestException('User does not exist')
+    if (!user)
+      throw new HttpException('User does not exist.', HttpStatus.NOT_FOUND)
     const isPasswordMatches = await argon2.verify(user.password, password)
     if (!isPasswordMatches)
-      throw new BadRequestException('Password is incorrect')
+      throw new HttpException('Password is incorrect.', HttpStatus.FORBIDDEN)
 
     if (user && isPasswordMatches) {
       return user

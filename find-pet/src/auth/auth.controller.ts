@@ -17,14 +17,14 @@ import { RefreshJwtAuthGuard } from './guards/refresh-jwt.guard'
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @HttpCode(201)
+  @HttpCode(200)
   @Header('Content-Type', 'application/json')
   @Post('signup')
   async signUp(@Body() createUserDto: CreateUserDto) {
     return this.authService.signUp(createUserDto)
   }
 
-  @HttpCode(201)
+  @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @Header('Content-Type', 'application/json')
   @Post('login')

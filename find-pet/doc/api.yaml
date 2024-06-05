@@ -8,6 +8,14 @@ servers:
   - url: /
 
 components:
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      BearerFormat: JWT
   schemas:
     User:
       type: object
@@ -91,8 +99,7 @@ components:
         - description
         - ownerId
 security:
-  - bearerAuth: []
-
+  - BearerAuth: []
 paths:
   /login:
     post:
@@ -145,13 +152,13 @@ paths:
         404:
           description: Incorrect login. User doesn't exist.
         403:
-          description: Password is incorrect.
+          description: Password is incorrect or expired token.
   /signup:
     post:
       tags:
         - Signup
-      security: []
       summary: Signup
+      security: []
       description: Signup a user
       requestBody:
         required: true
@@ -181,7 +188,192 @@ paths:
       responses:
         200:
           description: Successful sign up.
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/User'
         400:
           description: Bad request.
         409:
           description: Conflict. User's email already exist.
+  /refresh:
+    post:
+      tags:
+        - Refresh
+      summary: Refresh
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: example
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  format: uuid
+      responses:
+        200:
+          description: Successful refresh token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: JWT Token
+                  refreshToken:
+                    type: string
+                    description: JWT Token
+        403:
+          description: Expired token
+        400:
+          description: Bad request.
+  /user:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      description: Gets all users
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags:
+        - Users
+      summary: Create user
+      description: Creates a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: example
+              properties:
+                login:
+                  type: string
+                  description: The user's login
+                password:
+                  type: string
+                  description: The user's password
+              required:
+                - email
+                - name
+                - password
+      responses:
+        201:
+          description: The user has been created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Bad request. body does not contain required fields
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+  /user/{userId}:
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Users
+      summary: Get single user by id
+      description: Get single user by id
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Bad request. userId is invalid (not uuid)
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          description: User not found
+    put:
+      tags:
+        - Users
+      summary: Update a user's password
+      description: Updates a user's password by ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: example
+              properties:
+                oldPassword:
+                  type: string
+                  description: The user's old password
+                newPassword:
+                  type: string
+                  description: The user's new password
+              required:
+                - oldPassword
+                - newPassword
+      responses:
+        200:
+          description: The user has been updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: example
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  login:
+                    type: string
+                    example: TestUser
+                  version:
+                    type: integer
+                    example: 2
+                  createAt:
+                    type: integer
+                    example: 1655000000
+                  updateAt:
+                    type: integer
+                    example: 1655999999
+        400:
+          description: Bad request. userId is invalid (not uuid)
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: oldPassword is wrong
+        404:
+          description: User not found
+
+    delete:
+      tags:
+        - Users
+      summary: Delete user
+      description: Deletes user by ID.
+      responses:
+        204:
+          description: The user has been deleted
+        400:
+          description: Bad request. userId is invalid (not uuid)
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          description: User not found

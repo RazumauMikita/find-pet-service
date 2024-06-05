@@ -6,18 +6,30 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common'
+import { AnyFilesInterceptor } from '@nestjs/platform-express'
+
 import { LostService } from './lost.service'
+
 import { CreateLostDto } from './dto/create-lost.dto'
 import { UpdateLostDto } from './dto/update-lost.dto'
+
+import { multerOptions } from 'src/config/multer.config'
 
 @Controller('lost')
 export class LostController {
   constructor(private readonly lostService: LostService) {}
 
   @Post()
-  create(@Body() createLostDto: CreateLostDto) {
-    return this.lostService.create(createLostDto)
+  @UseInterceptors(AnyFilesInterceptor(multerOptions))
+  create(
+    @Body() createLostDto: CreateLostDto,
+    @UploadedFiles() files: Array<Express.Multer.File>
+  ) {
+    console.log(files)
+    return this.lostService.create(createLostDto, files)
   }
 
   @Get()

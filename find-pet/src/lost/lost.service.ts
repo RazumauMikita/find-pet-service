@@ -1,10 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+
 import { CreateLostDto } from './dto/create-lost.dto'
 import { UpdateLostDto } from './dto/update-lost.dto'
 import { LostEntity } from './entities/lost.entity'
-import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+
 import { UsersService } from 'src/users/users.service'
+
+import { getFilesPath } from 'src/utils/commonUtils'
 
 @Injectable()
 export class LostService {
@@ -13,13 +17,19 @@ export class LostService {
     private lostRepository: Repository<LostEntity>,
     private userService: UsersService
   ) {}
-  async create(createLostDto: CreateLostDto) {
+
+  async create(
+    createLostDto: CreateLostDto,
+    files: Array<Express.Multer.File>
+  ) {
     await this.userService.isUserExist(createLostDto.ownerId)
     const { id } = await this.lostRepository.save({
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      coordinates: createLostDto.coordinates,
       ownerId: createLostDto.ownerId,
       description: createLostDto.description,
+      images: getFilesPath(files),
     })
     return await this.findOne(id)
   }

@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm'
+
+import { UsersModule } from 'src/users/users.module'
+
 import { LostService } from './lost.service'
 import { LostController } from './lost.controller'
-import { TypeOrmModule } from '@nestjs/typeorm'
+
 import { LostEntity } from './entities/lost.entity'
-import { UsersService } from 'src/users/users.service'
 import { UserEntity } from 'src/users/entities/user.entity'
-import { UsersModule } from 'src/users/users.module'
 
 @Module({
   imports: [

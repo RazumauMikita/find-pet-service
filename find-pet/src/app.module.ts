@@ -5,7 +5,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { LoggerModule } from './logger/logger.module'
 import { AuthModule } from './auth/auth.module'
-import { LostModule } from './lost/lost.module';
+import { LostModule } from './lost/lost.module'
+import { ServeStaticModule } from '@nestjs/serve-static'
+import { join } from 'path'
 
 @Module({
   imports: [
@@ -31,6 +33,9 @@ import { LostModule } from './lost/lost.module';
     LoggerModule,
     AuthModule,
     LostModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..'),
+    }),
   ],
 })
 export class AppModule {}

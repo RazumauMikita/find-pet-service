@@ -262,12 +262,18 @@ paths:
               type: object
               title: example
               properties:
-                login:
+                email:
                   type: string
                   description: The user's login
+                name:
+                  type: string
                 password:
                   type: string
                   description: The user's password
+                city:
+                  type: string
+                country:
+                  type: string
               required:
                 - email
                 - name
@@ -311,8 +317,8 @@ paths:
     put:
       tags:
         - Users
-      summary: Update a user's password
-      description: Updates a user's password by ID
+      summary: Update user's properties
+      description: Updates user's properties by ID
       requestBody:
         required: true
         content:
@@ -327,6 +333,14 @@ paths:
                 newPassword:
                   type: string
                   description: The user's new password
+                name:
+                  type: string
+                city:
+                  type: string
+                country:
+                  type: string
+                email:
+                  type: string
               required:
                 - oldPassword
                 - newPassword
@@ -377,3 +391,145 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         404:
           description: User not found
+  /lost:
+    get:
+      tags:
+        - Lost
+      summary: Get lost list
+      security: []
+      description: Gets all lost list
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lost'
+    post:
+      tags:
+        - Lost
+      summary: Add new lost/find pet
+      description: Add new lost/find pet
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                ownerId:
+                  type: string
+                  format: uuid
+                isLost:
+                  type: boolean
+                  description: A lost pet is marked as true, and a found pet is marked as false.
+                description:
+                  type: string
+                  description: Pet's name, appearance, location.
+                coordinates:
+                  type: string
+                  description: Coordinates in the map.
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - description
+                - coordinates
+      responses:
+        201:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lost'
+        400:
+          description: Bad request. body does not contain required fields
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+  /lost/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      tags:
+        - Lost
+      summary: Get single lost by id
+      description: Gets single slot by id
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lost'
+        400:
+          description: Bad request. lostId is invalid (not uuid)
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          description: Lost was not found.
+    put:
+      tags:
+        - Lost
+      summary: Update lost information
+      description: Update lost information by UUID
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              title: example
+              properties:
+                ownerId:
+                  type: string
+                  format: uuid
+                  example: b0713603-12d5-4268-ab54-a4e83eb3b7da
+                description:
+                  type: string
+                coordinates:
+                  type: string
+                  description: Coordinates in the map
+                  example: '12312312.123123,123123,123123'
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - description
+      responses:
+        200:
+          description: The lost has been updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lost'
+        400:
+          description: Bad request. lostId is invalid (not uuid)
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          description: Lost was not found.
+    delete:
+      tags:
+        - Lost
+      summary: Delete lost
+      description: Delete lost from service
+      responses:
+        204:
+          description: Deleted successfully
+        400:
+          description: Bad request. lostId is invalid (not uuid)
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          description: Lost was not found.

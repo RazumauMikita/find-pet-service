@@ -1,0 +1,40 @@
+version: '3'
+name: pet_service
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    depends_on:
+      - postgres
+    environment:
+      NODE_ENV: development
+      PORT: ${PORT}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PORT: ${DB_PORT}
+      POSTGRES_HOST: ${DB_HOST}
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - my-network
+
+  postgres:
+    container_name: database
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    restart: always
+    user: postgres
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

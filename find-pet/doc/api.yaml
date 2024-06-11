@@ -175,6 +175,9 @@ paths:
                 name:
                   type: string
                   description: User's name
+                password:
+                  type: string
+                  description: Users's password
                 country:
                   type: string
                   description: User's country
@@ -232,7 +235,7 @@ paths:
           description: Expired token
         400:
           description: Bad request.
-  /user:
+  /users:
     get:
       tags:
         - Users
@@ -289,7 +292,7 @@ paths:
           description: Bad request. body does not contain required fields
         401:
           $ref: '#/components/responses/UnauthorizedError'
-  /user/{userId}:
+  /users/{userId}:
     parameters:
       - name: userId
         in: path

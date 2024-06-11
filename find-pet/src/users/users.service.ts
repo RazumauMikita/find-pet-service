@@ -42,9 +42,10 @@ export class UsersService {
   async findOne(id: string) {
     await this.isUserExist(id)
 
-    return this.userRepository.findOne({
+    const { password, ...result } = await this.userRepository.findOne({
       where: { id },
     })
+    return result
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

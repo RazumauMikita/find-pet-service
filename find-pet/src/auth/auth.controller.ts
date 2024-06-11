@@ -19,6 +19,7 @@ export class AuthController {
 
   @HttpCode(200)
   @Header('Content-Type', 'application/json')
+  //@Header('Access-Control-Allow-Origin', '*')
   @Post('signup')
   async signUp(@Body() createUserDto: CreateUserDto) {
     return this.authService.signUp(createUserDto)

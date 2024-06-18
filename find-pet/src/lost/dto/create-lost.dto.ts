@@ -2,6 +2,7 @@ export class CreateLostDto {
   ownerId: string
   isLost: boolean
   description: string
-  coordinates: string
+  lat: number
+  lng: number
   images: Express.Multer.File[]
 }

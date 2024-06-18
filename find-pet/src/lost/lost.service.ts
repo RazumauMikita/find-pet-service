@@ -27,10 +27,12 @@ export class LostService {
       createdAt: Date.now(),
       updatedAt: Date.now(),
       isLost: createLostDto.isLost,
-      coordinates: createLostDto.coordinates,
+      lng: createLostDto.lng,
+      lat: createLostDto.lat,
       ownerId: createLostDto.ownerId,
       description: createLostDto.description,
       images: getFilesPath(files),
+      version: 1,
     })
     return await this.findOne(id)
   }
@@ -48,7 +50,8 @@ export class LostService {
     await this.lostRepository.update(id, {
       description: updateLostDto.description,
       version: existLost.version + 1,
-      coordinates: updateLostDto.coordinates,
+      lat: updateLostDto.lat,
+      lng: updateLostDto.lng,
       updatedAt: Date.now(),
     })
     return await this.findOne(id)

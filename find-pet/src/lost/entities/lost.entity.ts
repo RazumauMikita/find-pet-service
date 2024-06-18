@@ -35,8 +35,11 @@ export class LostEntity {
   @Column()
   description: string
 
-  @Column()
-  coordinates: string
+  @Column({ type: 'float' })
+  lng: number
+
+  @Column({ type: 'float' })
+  lat: number
 
   @ManyToOne(() => UserEntity, (user) => user.lost)
   @JoinColumn({ referencedColumnName: 'id' })

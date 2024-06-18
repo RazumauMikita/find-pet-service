@@ -90,7 +90,7 @@ components:
         lat:
           type: number
           example: 27.1233456435
-          description: Latitude  is a number (coordinates) used to describe a position on the plane of a geographic coordinate system
+          description: Latitude  is a number (coordinates) used to describe a position on the plane of a geographic coordinate system.
         version:
           type: number
           example: 1
@@ -436,9 +436,14 @@ paths:
                 description:
                   type: string
                   description: Pet's name, appearance, location.
-                coordinates:
-                  type: string
-                  description: Coordinates in the map.
+                lng:
+                  type: number
+                  example: 54.1233456435
+                  description: longitude is a number (coordinates) used to describe a position on the plane of a geographic coordinate system.
+                lat:
+                  type: number
+                  example: 27.1233456435
+                  description: Latitude  is a number (coordinates) used to describe a position on the plane of a geographic coordinate system.
                 images:
                   type: array
                   items:

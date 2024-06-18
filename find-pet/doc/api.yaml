@@ -74,9 +74,6 @@ components:
           type: boolean
           description: 'A lost pet is marked as true, and a found pet is marked as false.'
           example: false
-        coordinates:
-          type: string
-          example: '23.234234, 33.23423424'
         description:
           type: string
           example: 'Description of my pet.'
@@ -86,6 +83,14 @@ components:
             type: string
           description: 'Locations of images.'
           example: 'pet-site.by/public/uploads/b0713603-12d5-4268-ab54-a4e83eb3b7da.jpg'
+        lng:
+          type: number
+          example: 54.1233456435
+          description: longitude is a number (coordinates) used to describe a position on the plane of a geographic coordinate system.
+        lat:
+          type: number
+          example: 27.1233456435
+          description: Latitude  is a number (coordinates) used to describe a position on the plane of a geographic coordinate system
         version:
           type: number
           example: 1
